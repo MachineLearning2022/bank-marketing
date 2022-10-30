@@ -1,17 +1,17 @@
 # bank-marketing
-https://github.com/MachineLearning2022/bank-marketing
-#导入库
+# https://github.com/MachineLearning2022/bank-marketing
+# 导入库
 import numpy as np
 import pandas as pd
 pd.set_option('display.max_rows', 50)
 pd.set_option('display.max_columns', 50)
 train = pd.read_csv('data/bank.csv')
 train.head()
-#label Y
+# label Y
 train['y'].replace(to_replace = 'no', value = 0, inplace = True)
 train['y'].replace(to_replace = 'yes', value = 1, inplace = True)
 train['y'].value_counts()
-#缺失值处理
+# 缺失值处理
 def missing_data(data):
     total = data.isin(['unknown']).sum()
     #count计算总行数，计算0和1个数；sum计算所以0和1的加和
@@ -33,7 +33,7 @@ train['housing'].replace(['unknown'],train['housing'].mode(),inplace=True)
 train['loan'].replace(['unknown'],train['loan'].mode(),inplace=True)
 train.drop('default',inplace=True,axis=1)
 
-#Data Visualization
+# Data Visualization
 import matplotlib.pyplot as plt
 plt.figure(figsize=(5,5))
 labels ="no", "yes"
@@ -95,7 +95,7 @@ ax = sns.heatmap(corr, xticklabels = corr.columns, yticklabels = corr.columns, l
 ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 20)
 ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 20)
 plt.show()
-#生成虚拟变量
+# 生成虚拟变量
 train=pd.get_dummies(train,drop_first = True)
 train.head()
 feature_cols = [column for column in train if column != 'y']
@@ -128,7 +128,7 @@ y_pred_prob
 log_odds = LR.coef_[0]
 a = pd.DataFrame.from_dict(dict(zip(train_data.columns,log_odds)),orient='index')
 a
-#Model Evaluation
+# Model Evaluation
 test_accuracy = LR.score(X_test, y_test)
 print("Accuracy", test_accuracy)
 from sklearn import metrics
