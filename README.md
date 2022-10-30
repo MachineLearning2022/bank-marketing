@@ -1,5 +1,6 @@
 # bank-marketing
 https://github.com/MachineLearning2022/bank-marketing
+
 import numpy as np
 import pandas as pd
 pd.set_option('display.max_rows', 50)
@@ -106,11 +107,8 @@ train.drop('emp.var.rate',inplace=True,axis=1)
 train.drop('nr.employed',inplace=True,axis=1)
 corr = train.corr()
 plt.figure(figsize = (50, 50))
-# annot_kws: 标注字体大小
 ax = sns.heatmap(corr, xticklabels = corr.columns, yticklabels = corr.columns, linewidth = 1.2, cmap = 'YlGnBu', annot = True, annot_kws={"fontsize":17})
-# 增大x轴标签的大小
 ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 20)
-# 增大y轴标签的大小
 ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 20)
 plt.show()
 
