@@ -1,23 +1,17 @@
 # bank-marketing
 https://github.com/MachineLearning2022/bank-marketing
-
+#导入库
 import numpy as np
 import pandas as pd
 pd.set_option('display.max_rows', 50)
 pd.set_option('display.max_columns', 50)
 train = pd.read_csv('data/bank.csv')
 train.head()
-
-train['job'].replace(['unknown'],train['job'].mode(),inplace=True)
-train['marital'].replace(['unknown'],train['marital'].mode(),inplace=True)
-train['education'].replace(['unknown'],train['education'].mode(),inplace=True)
-train['default'].replace(['unknown'],train['default'].mode(),inplace=True)
-train['housing'].replace(['unknown'],train['housing'].mode(),inplace=True)
-
+#label Y
 train['y'].replace(to_replace = 'no', value = 0, inplace = True)
 train['y'].replace(to_replace = 'yes', value = 1, inplace = True)
 train['y'].value_counts()
-
+#缺失值处理
 def missing_data(data):
     total = data.isin(['unknown']).sum()
     #count计算总行数，计算0和1个数；sum计算所以0和1的加和
@@ -37,41 +31,31 @@ train['education'].replace(['unknown'],train['education'].mode(),inplace=True)
 train['default'].replace(['unknown'],train['default'].mode(),inplace=True)
 train['housing'].replace(['unknown'],train['housing'].mode(),inplace=True)
 train['loan'].replace(['unknown'],train['loan'].mode(),inplace=True)
-
 train.drop('default',inplace=True,axis=1)
 
+#Data Visualization
 import matplotlib.pyplot as plt
 plt.figure(figsize=(5,5))
 labels ="no", "yes"
 count = train["y"].value_counts()
 textprops = {"fontsize":15}
-
 plt.pie(count,  autopct='%1.2f%%', labels=labels,  startangle=25, textprops =textprops)
-
 plt.title("Percentage of Saving", fontsize=15)
 plt.show()
-
-import matplotlib.pyplot as plt
 plt.figure(figsize=(5,5))
 labels ="no", "yes"
 count = train["loan"].value_counts()
 textprops = {"fontsize":15}
-
 plt.pie(count,  autopct='%1.2f%%', labels=labels,  startangle=25, textprops =textprops)
-
 plt.title("Percentage of loan", fontsize=15)
 plt.show()
-
 import seaborn as sns
-import matplotlib.pyplot as plt
 fg = sns.FacetGrid(data=train,height=6,hue='y')
 fg = (fg.map(sns.distplot,'age',bins=[20,25,30,35,40,45,50,55,60,65,70,75,80,85,90]).add_legend())
-
 fg=sns.catplot(data=train,x='job',kind='bar',y='y',ci=None)
 fg=(fg.set_xticklabels(rotation=90)
     .set_axis_labels('','purchase rate')
-    .despine(left=True))
-    
+    .despine(left=True))   
 fg=sns.catplot(data=train,x='marital',kind='bar',y='y',ci=None,aspect=.8)
 fg=(fg.set_axis_labels('marital','purchase rate')
     .despine(left=True))
@@ -111,7 +95,7 @@ ax = sns.heatmap(corr, xticklabels = corr.columns, yticklabels = corr.columns, l
 ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize = 20)
 ax.set_yticklabels(ax.get_ymajorticklabels(), fontsize = 20)
 plt.show()
-
+#生成虚拟变量
 train=pd.get_dummies(train,drop_first = True)
 train.head()
 feature_cols = [column for column in train if column != 'y']
@@ -130,7 +114,7 @@ X_train,X_test,y_train,y_test = train_test_split(train_data,train['y'],test_size
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-# 正则化
+# Logistic Regression
 LR=LogisticRegression(penalty = 'l2',solver='saga')
 LR.fit(X_train,y_train)
 LR.score(X_train,y_train)
@@ -144,9 +128,9 @@ y_pred_prob
 log_odds = LR.coef_[0]
 a = pd.DataFrame.from_dict(dict(zip(train_data.columns,log_odds)),orient='index')
 a
+#Model Evaluation
 test_accuracy = LR.score(X_test, y_test)
 print("Accuracy", test_accuracy)
-
 from sklearn import metrics
 test_precision = metrics.precision_score(y_test,y_pred,average = 'macro')
 print("Precision", test_precision)
@@ -154,13 +138,10 @@ test_recall = metrics.recall_score(y_test, y_pred,average = 'macro')
 print("Recall:", test_recall)
 test_f1 = metrics.f1_score(y_test, y_pred,average = 'macro')
 print("test_f1:", test_f1)
-
 test_auc_roc = metrics.roc_auc_score(y_test, y_pred_prob[::,1])
 print('Testing AUC:',test_auc_roc)
-
 cnf_matrix = metrics.confusion_matrix(y_test, y_pred)
 cnf_matrix
-
 plt.figure(figsize=(9,9))
 sns.heatmap(cnf_matrix, annot=True, fmt=".3f", linewidths=.5, square = True, cmap = 'Blues_r');
 plt.ylabel('Actual label');
